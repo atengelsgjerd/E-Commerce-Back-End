@@ -12,6 +12,10 @@ router.get('/', (req, res) => {
       {
         model: Category,
         attributes: ['category_name']
+      },
+      {
+        model: Tag,
+        attributes: ['tag_name']
       }
     ]
   })
@@ -34,6 +38,10 @@ router.get('/:id', (req, res) => {
       {
         model: Category,
         attributes: ['category_name']
+      },
+      {
+        model: Tag,
+        attributes: ['tag_name']
       }
     ]
 })
@@ -58,6 +66,7 @@ router.post('/', (req, res) => {
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
       if (req.body.tagIds.length) {
+        console.log(req.body.tagIds);
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
             product_id: product.id,
@@ -121,8 +130,12 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
+ const deletedProduct = await Product.destroy({
+    where: { id: req.params.id}
+  })
+  res.json(deletedProduct);
 });
 
 module.exports = router;
